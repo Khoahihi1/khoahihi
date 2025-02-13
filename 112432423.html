@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư Viện Nâng Cao</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #0073e6;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        #searchInput {
+            width: 60%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+        }
+
+        #uploadForm {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        #uploadForm input[type="text"],
+        #uploadForm input[type="file"] {
+            margin: 5px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #addBookButton, #clearStorageButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #addBookButton:hover, #clearStorageButton:hover {
+            background-color: #005bb5;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #bookList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .book {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .book:hover {
+            transform: translateY(-5px);
+        }
+
+        .book h3 {
+            margin: 0 0 10px;
+            font-size: 1.2rem;
+        }
+
+        .book p {
+            margin: 0;
+            color: #666;
+        }
+
+        #bookDetails {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        #bookDetails h2 {
+            margin-top: 0;
+        }
+
+        #bookImage {
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        #backButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #backButton:hover {
+            background-color: #005bb5;
+        }
+
+        #resizeButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #resizeButton:hover {
+            background-color: #d95d11;
+        }
+
+        #pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination-button {
+            padding: 10px 15px;
+            margin: 0 5px;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pagination-button:hover {
+            background-color: #005bb5;
+        }
+
+        .pagination-button.active {
+            background-color: #e67e22;
+        }
+
+        footer {
+            background-color: #0073e6;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        #deleteBookButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #deleteBookButton:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Thư Viện Nâng Cao</h1>
+        <input type="text" id="searchInput" placeholder="Tìm kiếm sách theo tiêu đề, tác giả hoặc thể loại...">
+    </header>
+
+    <main>
+        <div id="uploadForm">
+            <h2>Thêm Sách Mới</h2>
+            <input type="text" id="newBookTitle" placeholder="Tiêu đề sách" required>
+            <input type="text" id="newBookAuthor" placeholder="Tác giả" required>
+            <input type="text" id="newBookDescription" placeholder="Mô tả sách" required>
+            <input type="text" id="newBookGenre" placeholder="Thể loại" required>
+            <input type="file" id="newBookImage" accept="image/*" required>
+            <button id="addBookButton">Thêm Sách</button>
+        </div>
+
+        <section id="bookList">
+            <!-- Danh sách sách sẽ được hiển thị ở đây -->
+        </section>
+
+        <section id="bookDetails" class="hidden">
+            <h2>Chi Tiết Sách</h2>
+            <img id="bookImage" alt="Book Image">
+            <p id="bookDescription"></p>
+            <input type="number" id="imageWidth" placeholder="Chiều rộng (px)" required>
+            <input type="number" id="imageHeight" placeholder="Chiều cao (px)" required>
+            <button id="resizeButton">Thay đổi kích thước</button>
+            <button id="backButton">Quay lại</button>
+        </section>
+
+        <button id="clearStorageButton">Xóa Tất Cả Sách</button>
+
+        <div id="pagination"></div>
+    </main>
+
+    <footer>
+        <p>&copy; Nhật Nguyên và Đăng Khoa. Tất cả quyền được bảo lưu.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const books = JSON.parse(localStorage.getItem('books')) || [];
+            const booksPerPage = 5;
+            let currentPage = 1;
+            let currentBookIndex = null;
+
+            const bookList = document.getElementById('bookList');
+            const pagination = document.getElementById('pagination');
+            const addBookButton = document.getElementById('addBookButton');
+            const newBookTitle = document.getElementById('newBookTitle');
+            const newBookAuthor = document.getElementById('newBookAuthor');
+            const newBookDescription = document.getElementById('newBookDescription');
+            const newBookGenre = document.getElementById('newBookGenre');
+            const newBookImage = document.getElementById('newBookImage');
+            const bookDetails = document.getElementById('bookDetails');
+            const bookImage = document.getElementById('bookImage');
+            const bookDescription = document.getElementById('bookDescription');
+            const backButton = document.getElementById('backButton');
+            const searchInput = document.getElementById('searchInput');
+            const resizeButton = document.getElementById('resizeButton');
+            const imageWidth = document.getElementById('imageWidth');
+            const imageHeight = document.getElementById('imageHeight');
+
+            const deleteBookButton = document.createElement('button');
+            deleteBookButton.textContent = 'Xóa Sách';
+            deleteBookButton.id = 'deleteBookButton';
+            deleteBookButton.addEventListener('click', deleteBook);
+            bookDetails.appendChild(deleteBookButton);
+
+            const clearStorageButton = document.getElementById('clearStorageButton');
+            clearStorageButton.addEventListener('click', () => {
+                localStorage.removeItem('books');
+                books.length = 0; // Xóa mảng sách
+                displayBooks();
+            });
+
+            function saveBooks() {
+                try {
+                    localStorage.setItem('books', JSON.stringify(books));
+                } catch (e) {
+                    if (e.name === 'QuotaExceededError') {
+                        alert("Dung lượng lưu trữ đã đầy. Vui lòng xóa một số sách cũ.");
+                    } else {
+                        console.error("Lỗi khi lưu sách:", e);
+                    }
+                }
+            }
+
+            function displayBooks(filteredBooks = books) {
+                bookList.innerHTML = '';
+                const startIndex = (currentPage - 1) * booksPerPage;
+                const endIndex = startIndex + booksPerPage;
+                const paginatedBooks = filteredBooks.slice(startIndex, endIndex);
+
+                paginatedBooks.forEach((book, index) => {
+                    const bookDiv = document.createElement('div');
+                    bookDiv.classList.add('book');
+                    bookDiv.innerHTML = `<h3>${book.title}</h3><p>${book.author}</p>`;
+                    bookDiv.addEventListener('click', () => showBookDetails(index + startIndex));
+                    bookList.appendChild(bookDiv);
+                });
+                setupPagination(filteredBooks);
+            }
+
+            function showBookDetails(index) {
+                currentBookIndex = index;
+                const book = books[index];
+                bookDescription.textContent = book.description;
+                bookImage.src = book.image;
+                bookDetails.style.display = 'block';
+                bookList.style.display = 'none';
+            }
+
+            function deleteBook() {
+                if (currentBookIndex !== null) {
+                    books.splice(currentBookIndex, 1);
+                    saveBooks();
+                    bookDetails.style.display = 'none';
+                    bookList.style.display = 'block';
+                    displayBooks();
+                }
+            }
+
+            backButton.addEventListener('click', () => {
+                bookDetails.style.display = 'none';
+                bookList.style.display = 'block';
+            });
+
+            function setupPagination(filteredBooks) {
+                pagination.innerHTML = '';
+                const pageCount = Math.ceil(filteredBooks.length / booksPerPage);
+                for (let i = 1; i <= pageCount; i++) {
+                    const button = document.createElement('button');
+                    button.textContent = i;
+                    button.classList.add('pagination-button');
+                    if (i === currentPage) button.classList.add('active');
+                    button.addEventListener('click', () => {
+                        currentPage = i;
+                        displayBooks(filteredBooks);
+                    });
+                    pagination.appendChild(button);
+                }
+            }
+
+            addBookButton.addEventListener('click', () => {
+                const file = newBookImage.files[0];
+                if (!file || !newBookTitle.value || !newBookAuthor.value || !newBookDescription.value || !newBookGenre.value) {
+                    alert("Vui lòng điền đầy đủ thông tin và chọn ảnh!");
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const newBook = {
+                        title: newBookTitle.value,
+                        author: newBookAuthor.value,
+                        description: newBookDescription.value,
+                        genre: newBookGenre.value,
+                        image: event.target.result
+                    };
+                    books.push(newBook);
+                    saveBooks();
+                    displayBooks();
+
+                    newBookTitle.value = '';
+                    newBookAuthor.value = '';
+                    newBookDescription.value = '';
+                    newBookGenre.value = '';
+                    newBookImage.value = '';
+                };
+                reader.readAsDataURL(file);
+            });
+
+            searchInput.addEventListener('input', () => {
+                const searchTerm = searchInput.value.toLowerCase();
+                const filteredBooks = books.filter(book => 
+                    book.title.toLowerCase().includes(searchTerm) || 
+                    book.author.toLowerCase().includes(searchTerm) || 
+                    book.genre.toLowerCase().includes(searchTerm)
+                );
+                currentPage = 1; // Reset to first page on search
+                displayBooks(filteredBooks);
+            });
+
+            // Thêm sự kiện cho nút thay đổi kích thước
+            resizeButton.addEventListener('click', () => {
+                const width = parseInt(imageWidth.value);
+                const height = parseInt(imageHeight.value);
+                if (!isNaN(width) && !isNaN(height) && width > 0 && height > 0) {
+                    bookImage.style.width = `${width}px`;
+                    bookImage.style.height = `${height}px`;
+                } else {
+                    alert("Vui lòng nhập chiều rộng và chiều cao hợp lệ!");
+                }
+            });
+
+            displayBooks();
+        });
+    </script>
+</body>
+</html>
