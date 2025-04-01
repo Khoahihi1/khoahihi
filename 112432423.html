@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thư Viện Nâng Cao</title>
+    <link rel="icon" type="image/png" href="743e1855392eceb8c6857dc499b5db42-removebg-preview.png">
+
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -169,13 +171,49 @@
             background-color: #e67e22;
         }
 
-        footer {
-            background-color: #0073e6;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            margin-top: 20px;
-        }
+        .small-footer {
+    background-color: #007bff; /* Màu xanh đồng bộ */
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    border-top: 2px solid #0056b3;
+    font-family: inherit; /* Kế thừa font chữ từ web */
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+   
+    
+    margin: 0 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.social-links a img {
+    width: 24px; 
+    height: 24px;
+}
+
+
+.footer-content a {
+    color: white; 
+    text-decoration: none;
+}
+
+.footer-content a:hover {
+    text-decoration: underline; 
+}
+
 
         #deleteBookButton {
             margin-top: 20px;
@@ -211,7 +249,7 @@
         </div>
 
         <section id="bookList">
-            <!-- Danh sách sách sẽ được hiển thị ở đây -->
+           
         </section>
 
         <section id="bookDetails" class="hidden">
@@ -229,10 +267,22 @@
         <div id="pagination"></div>
     </main>
 
-    <footer>
-        <p>&copy; Nhật Nguyên và Đăng Khoa. Tất cả quyền được bảo lưu.</p>
-    </footer>
-
+  <footer class="small-footer">
+    <div class="footer-content">
+        <div class="social-links">
+            <a href="https://www.facebook.com" target="_blank">
+                <img src="fb.png" alt="Facebook">
+            </a>
+            <a href="https://zalo.me" target="_blank">
+                <img src="zl.png" alt="Zalo">
+            </a>
+            <a href="https://www.youtube.com" target="_blank">
+                <img src="ytb.png" alt="YouTube">
+            </a>
+        </div>
+        <p>&copy; 2025 Trang Web Của KhoaHihi | Liên hệ: <a href="dangkhoash@gmail.com">dangkhoash@gmail.com</a></p>
+    </div>
+</footer>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const books = JSON.parse(localStorage.getItem('books')) || [];
@@ -266,7 +316,7 @@
             const clearStorageButton = document.getElementById('clearStorageButton');
             clearStorageButton.addEventListener('click', () => {
                 localStorage.removeItem('books');
-                books.length = 0; // Xóa mảng sách
+                books.length = 0; 
                 displayBooks();
             });
 
